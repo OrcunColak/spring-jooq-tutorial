@@ -1,13 +1,15 @@
 package com.colak.springjooqtutorial.service;
 
 import com.colak.springjooqtutorial.dto.GoodsDto;
-import org.jooq.generated.public_.tables.Goods;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface GoodsService {
 
     GoodsDto create(GoodsDto goodsDto);
+
+    List<GoodsDto> findAll();
 
     GoodsDto update(GoodsDto goodsDto);
 

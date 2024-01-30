@@ -5,10 +5,12 @@ import com.colak.springjooqtutorial.service.GoodsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
+import org.jooq.Record;
 import org.jooq.generated.public_.tables.Goods;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -34,6 +36,17 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
+    public List<GoodsDto> findAll() {
+        return dslContext
+                .select()
+                .from(Goods.GOODS)
+                .fetch()
+                .stream()
+                .map(GoodsServiceImpl::toDto)
+                .toList();
+    }
+
+    @Override
     public GoodsDto update(GoodsDto goodsDto) {
         var updated = dslContext.update(Goods.GOODS)
                 .set(Goods.GOODS.ID, goodsDto.id())
@@ -49,26 +62,12 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public GoodsDto getById(UUID id) {
-        final var fetchedRecord = dslContext.select(
-                        Goods.GOODS.ID,
-                        Goods.GOODS.NAME,
-                        Goods.GOODS.PRICE,
-                        Goods.GOODS.SOLD_COUNT,
-                        Goods.GOODS.TOTAL_COUNT,
-                        Goods.GOODS.DELETED
-                )
+        var fetchedRecord = dslContext.select()
                 .from(Goods.GOODS)
                 .where(Goods.GOODS.ID.eq(id))
                 .fetchOne();
         Assert.notNull(fetchedRecord, "Record with id = " + id + " is not exists");
-        return new GoodsDto(
-                fetchedRecord.get(Goods.GOODS.ID),
-                fetchedRecord.get(Goods.GOODS.NAME),
-                fetchedRecord.get(Goods.GOODS.PRICE),
-                fetchedRecord.get(Goods.GOODS.SOLD_COUNT),
-                fetchedRecord.get(Goods.GOODS.TOTAL_COUNT),
-                fetchedRecord.get(Goods.GOODS.DELETED)
-        );
+        return toDto(fetchedRecord);
     }
 
     @Override
@@ -79,5 +78,16 @@ public class GoodsServiceImpl implements GoodsService {
                 .execute();
 
         log.info("Successfully deleted the good with id = [" + id + "]");
+    }
+
+    private static GoodsDto toDto(Record fetchedRecord) {
+        return new GoodsDto(
+                fetchedRecord.get(Goods.GOODS.ID),
+                fetchedRecord.get(Goods.GOODS.NAME),
+                fetchedRecord.get(Goods.GOODS.PRICE),
+                fetchedRecord.get(Goods.GOODS.SOLD_COUNT),
+                fetchedRecord.get(Goods.GOODS.TOTAL_COUNT),
+                fetchedRecord.get(Goods.GOODS.DELETED)
+        );
     }
 }
