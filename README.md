@@ -13,7 +13,10 @@ Run
 ```
 mvn jooq-codegen:generate
 ```
-
+or
+```
+mvn generate-sources
+```
 # Swagger UI
 
 http://localhost:8080/swagger-ui/index.html
