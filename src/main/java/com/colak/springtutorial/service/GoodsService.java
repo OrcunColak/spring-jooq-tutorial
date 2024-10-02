@@ -1,7 +1,6 @@
-package com.colak.springjooqtutorial.service.impl;
+package com.colak.springtutorial.service;
 
-import com.colak.springjooqtutorial.dto.GoodsDto;
-import com.colak.springjooqtutorial.service.GoodsService;
+import com.colak.springtutorial.dto.GoodsDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
@@ -16,11 +15,10 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class GoodsServiceImpl implements GoodsService {
+public class GoodsService {
 
     private final DSLContext dslContext;
 
-    @Override
     public GoodsDto create(GoodsDto goodsDto) {
         var id = UUID.randomUUID();
         var result = dslContext.insertInto(Goods.GOODS)
@@ -35,18 +33,16 @@ public class GoodsServiceImpl implements GoodsService {
         return getById(id);
     }
 
-    @Override
     public List<GoodsDto> findAll() {
         return dslContext
                 .select()
                 .from(Goods.GOODS)
                 .fetch()
                 .stream()
-                .map(GoodsServiceImpl::toDto)
+                .map(GoodsService::toDto)
                 .toList();
     }
 
-    @Override
     public GoodsDto update(GoodsDto goodsDto) {
         var updated = dslContext.update(Goods.GOODS)
                 .set(Goods.GOODS.ID, goodsDto.id())
@@ -60,7 +56,6 @@ public class GoodsServiceImpl implements GoodsService {
         return this.getById(goodsDto.id());
     }
 
-    @Override
     public GoodsDto getById(UUID id) {
         var fetchedRecord = dslContext.select()
                 .from(Goods.GOODS)
@@ -70,7 +65,6 @@ public class GoodsServiceImpl implements GoodsService {
         return toDto(fetchedRecord);
     }
 
-    @Override
     public void delete(UUID id) {
         dslContext.update(Goods.GOODS).
                 set(Goods.GOODS.DELETED, true)

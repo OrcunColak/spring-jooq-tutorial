@@ -1,4 +1,4 @@
-package com.colak.springjooqtutorial.dto;
+package com.colak.springtutorial.dto;
 
 import java.math.BigDecimal;
 import java.util.UUID;
