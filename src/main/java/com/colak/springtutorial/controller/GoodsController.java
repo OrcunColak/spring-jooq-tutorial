@@ -1,7 +1,7 @@
 package com.colak.springtutorial.controller;
 
 import com.colak.springtutorial.dto.GoodsDto;
-import com.colak.springtutorial.service.GoodsService;
+import com.colak.springtutorial.service.goods.GoodsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +21,7 @@ public class GoodsController {
 
     @PostMapping("/create")
     public GoodsDto create(@RequestBody GoodsDto goodsDto) {
-        return goodsService.create(goodsDto);
+        return goodsService.insert(goodsDto);
     }
 
     @GetMapping("/{id}")
